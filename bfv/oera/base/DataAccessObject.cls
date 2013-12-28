@@ -1,4 +1,3 @@
-
 routine-level on error undo, throw.
 
 using bfv.oera.base.ComponentBase.
