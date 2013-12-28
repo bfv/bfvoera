@@ -1,15 +1,7 @@
 /* idatacontext.cls -- interface for datacontext objects. */
-INTERFACE bfv.oera.interfaces.idatacontext:
+interface bfv.oera.interfaces.IDataContext:
 
-METHOD PUBLIC CHARACTER getContext
-    (pcGroup AS CHARACTER,
-     pcName  AS CHARACTER,
-     pcOperator AS CHARACTER).
+  method public character GetContext(pcGroup as character, pcName  as character, pcOperator as character).
+  method public void GetContext(pcGroup as character, pcName as character, pcOperator as character, pcValue as character).
 
-METHOD PUBLIC VOID setContext
-    (pcGroup    AS CHARACTER,
-     pcName     AS CHARACTER,
-     pcOperator AS CHARACTER,
-     pcValue    AS CHARACTER).
-
-END INTERFACE.
+end interface.

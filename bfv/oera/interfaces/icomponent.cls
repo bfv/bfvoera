@@ -8,8 +8,9 @@
     Notes       : 
   ----------------------------------------------------------------------*/
   
-  INTERFACE bfv.oera.interfaces.icomponent: 
-      METHOD PUBLIC VOID initializeComponent().
-      METHOD PUBLIC VOID destroyComponent().
-      
-  END INTERFACE.
+interface bfv.oera.interfaces.IComponent: 
+  
+  method public void InitializeComponent().
+  method public void DestroyComponent().
+     
+end interface.

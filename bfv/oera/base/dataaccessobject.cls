@@ -22,15 +22,8 @@ class bfv.oera.base.DataAccessObject inherits ComponentBase implements IDataAcce
     end. 
     private set.
 
-  define protected event BeforeRowSave signature void (
-    Sender as Progress.Lang.Object,
-    EventArgs as DAEventArgs
-    ).
-
-  define protected event AfterRowSave signature void (
-    Sender as Progress.Lang.Object,
-    EventArgs as DAEventArgs
-    ).
+  define protected event BeforeRowSave signature void (Sender as Progress.Lang.Object, EventArgs as DAEventArgs).
+  define protected event AfterRowSave  signature void (Sender as Progress.Lang.Object, EventArgs as DAEventArgs).
 
   define public property DatasetHandle as handle no-undo
     get. 
@@ -75,10 +68,10 @@ class bfv.oera.base.DataAccessObject inherits ComponentBase implements IDataAcce
   
   method protected void SetFillMode(fillMode as character):
     /* Initialize all buffers in the dataset to a certain fill-mode */
-    define variable iBuffer as integer no-undo.
+    define variable i as integer no-undo.
     
-    do iBuffer = 1 to DatasetHandle:num-buffers:
-      DatasetHandle:get-buffer-handle(iBuffer):fill-mode = fillMode.
+    do i = 1 to DatasetHandle:num-buffers:
+      DatasetHandle:get-buffer-handle(i):fill-mode = fillMode.
     end.
     
   end method.
@@ -92,7 +85,7 @@ class bfv.oera.base.DataAccessObject inherits ComponentBase implements IDataAcce
     IgnoreWarning = contextInstance:getOption("ignoreWarning") = "YES".    
     ValidateData ().   
     BeforeCommit().   
-    if not DatasetHandle:error then
+    if (not DatasetHandle:error) then
       CommitData().     
     AfterCommit().
     DetachDatasource().    

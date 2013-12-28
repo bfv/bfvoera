@@ -1,5 +1,5 @@
 using bfv.oera.base.Componentbase.
-using bfv.oera.interfaces.IBusinessEntity.
+using bfv.oera.base.IBusinessEntity.
 using bfv.oera.base.srvdatacontext.
 using bfv.oera.base.ServerDataContext.
 using bfv.lib.util.DataSetHelper.

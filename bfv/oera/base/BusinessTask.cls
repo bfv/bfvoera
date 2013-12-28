@@ -9,7 +9,6 @@
     Notes       : 
   ----------------------------------------------------------------------*/
 
-using Progress.Lang.*.
 using bfv.oera.base.BusinessComponent.
 
 routine-level on error undo, throw.

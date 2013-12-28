@@ -2,7 +2,7 @@
 routine-level on error undo, throw.
 
 using bfv.oera.base.BusinessComponent.
-using bfv.oera.interfaces.IBusinessEntity.
+using bfv.oera.base.IBusinessEntity.
 using bfv.oera.interfaces.IDataAccess.
 using bfv.oera.base.srvdatacontext.
 using bfv.oera.base.ServerDataContext.
@@ -87,7 +87,7 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
     
     assign 
       beforebuffer:error = true
-      DatasetHandle:error   = true
+      DatasetHandle:error = true
       .
       
     return (if beforebuffer:error-string = ? then "" else (beforebuffer:error-string + "~n")) + errorstring.
@@ -102,7 +102,7 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
     /* Validate using the Business Logic and persistent store using the DataAccess Logic */
     ValidateData().
     PreTransaction().
-    if not DatasetHandle:error then do:
+    if (not DatasetHandle:error) then do:
       dataAccess:DatasetHandle = DatasetHandle.
       dataAccess:ContextInstance = CurrentDataContext.
       dataAccess:saveData().
