@@ -1,8 +1,7 @@
 
 routine-level on error undo, throw.
 
-using bfv.oera.base.componentbase.
-using bfv.oera.base.DataAccess.
+using bfv.oera.base.ComponentBase.
 using bfv.oera.base.DAEventArgs.
 using bfv.oera.base.srvdatacontext.
 using bfv.oera.base.ValidationManager.
@@ -11,7 +10,7 @@ using bfv.oera.service.ServiceManager.
 using Progress.Lang.AppError.
 
 
-class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAccess use-widget-pool abstract:
+class bfv.oera.base.DataAccessObject inherits ComponentBase implements IDataAccess use-widget-pool abstract:
   
   define private variable ignoreTempTables as character no-undo.
 
@@ -33,11 +32,11 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     EventArgs as DAEventArgs
     ).
 
-  define public property hdsDataset as handle no-undo
+  define public property DatasetHandle as handle no-undo
     get. 
     set (phDataSet as handle):
       if (valid-handle(phDataSet) and phDataSet:type = "DATASET") then
-        hdsDataSet = phDataSet.
+        DatasetHandle = phDataSet.
       else 
         undo, throw new AppError ("DAO: datasethandle not set", -1).
     end set.
@@ -53,14 +52,14 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   method public void LoadData():
     /* Load the data from the persistent store into the dataset
      * Entry point for the business entity 
-     * Precondition: attributes hdsDataset and context instance are valid handles to a real dataset */
+     * Precondition: attributes DatasetHandle and context instance are valid handles to a real dataset */
      
     define variable emptyDataset as character no-undo.
     
     emptyDataset = ContextInstance:getOption("DoNotEmptyDataset").
     
     if (emptyDataset = "" or emptyDataset = ?) then    /* via optie ander breekt andere code misschien */
-      hdsDataset:empty-dataset().  /* Sometimes required since everything is BY-REFERENCE */
+      DatasetHandle:empty-dataset().  /* Sometimes required since everything is BY-REFERENCE */
       
     SetFillMode("MERGE").
     AttachDatasource().     
@@ -69,7 +68,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     
     catch err1 as Progress.Lang.Error:
       ServiceManager:ExceptionService:addError("DAO0001", err1:GetMessage(1)).  
-      hdsDataset:error = true.
+      DatasetHandle:error = true.
     end catch.
     
   end method.
@@ -78,8 +77,8 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     /* Initialize all buffers in the dataset to a certain fill-mode */
     define variable iBuffer as integer no-undo.
     
-    do iBuffer = 1 to hdsDataset:num-buffers:
-      hdsDataset:get-buffer-handle(iBuffer):fill-mode = fillMode.
+    do iBuffer = 1 to DatasetHandle:num-buffers:
+      DatasetHandle:get-buffer-handle(iBuffer):fill-mode = fillMode.
     end.
     
   end method.
@@ -87,13 +86,13 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   method public void SaveData ():
     /* Save the data from the dataset into the persistent store 
      * Entry point for the business entity
-     * Precondition: attributes hdsDataset and context instance are valid handles to a real dataset */  
+     * Precondition: attributes DatasetHandle and context instance are valid handles to a real dataset */  
   
     AttachDatasource ().  
     IgnoreWarning = contextInstance:getOption("ignoreWarning") = "YES".    
     ValidateData ().   
     BeforeCommit().   
-    if not hdsDataset:error then
+    if not DatasetHandle:error then
       CommitData().     
     AfterCommit().
     DetachDatasource().    
@@ -101,7 +100,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     catch err1 as Progress.Lang.Error :
       message err1:GetMessage(1).
       ServiceManager:ExceptionService:addError("DAO0002", err1:GetMessage(1) + (if (err1:CallStack) > "" then "~n" + err1:CallStack else "")).	
-      hdsDataset:error = true.
+      DatasetHandle:error = true.
     end catch.
     
   end method.
@@ -119,13 +118,13 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     define variable cRowid            as char    no-undo.  
     
     /* Retrieve the batch size and nextRowid from the context for all buffers */
-    do iBuffer = 1 to hdsDataset:num-buffers:
+    do iBuffer = 1 to DatasetHandle:num-buffers:
     
       /* allow batch size at buffer level and top level */
       iBatchSize = integer(
         contextInstance:getContext(
           "OPTION", 
-          hdsDataset:get-buffer-handle(iBuffer):Name + ".batchSize",
+          DatasetHandle:get-buffer-handle(iBuffer):Name + ".batchSize",
           ""
         )
       ) no-error.
@@ -138,39 +137,39 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
                
       end.
       
-      hdsDataset:get-buffer-handle(iBuffer):batch-size = iBatchSize.
+      DatasetHandle:get-buffer-handle(iBuffer):batch-size = iBatchSize.
       
-      if valid-handle(hdsDataset:get-buffer-handle(iBuffer):data-source) then do:
+      if valid-handle(DatasetHandle:get-buffer-handle(iBuffer):data-source) then do:
       
-        do iDataSourceBuffer = 1 to hdsDataset:get-buffer-handle(iBuffer):data-source:num-source-buffers:
+        do iDataSourceBuffer = 1 to DatasetHandle:get-buffer-handle(iBuffer):data-source:num-source-buffers:
           
           cRowid = contextInstance:getContext(
             "OPTION", 
-            hdsDataset:get-buffer-handle(iBuffer):Name + "_" + string(iDataSourceBuffer) + ".restartRowid", ""
+            DatasetHandle:get-buffer-handle(iBuffer):Name + "_" + string(iDataSourceBuffer) + ".restartRowid", ""
           ).        
             
           if (cRowid <> "" and cRowid <> ?) then
-            hdsDataset:get-buffer-handle(iBuffer):data-source:restart-rowid(iDataSourceBuffer) = to-rowid(cRowid) no-error.
+            DatasetHandle:get-buffer-handle(iBuffer):data-source:restart-rowid(iDataSourceBuffer) = to-rowid(cRowid) no-error.
             
         end.
         
       end.
       
-    end.  /* do iBuffer = 1 to hdsDataset:num-buffers */
+    end.  /* do iBuffer = 1 to DatasetHandle:num-buffers */
     
     /* Actual logic to fill the dataset */    
-    hdsDataset:fill(). 
+    DatasetHandle:fill(). 
     
     /* Return the nextRowid for every buffer */
-    do iBuffer = 1 to hdsDataset:num-buffers:     
-      if (valid-handle (hdsDataset:get-buffer-handle(iBuffer):data-source)) then do:        
-        do iDataSourceBuffer = 1 to hdsDataset:get-buffer-handle(iBuffer):data-source:num-source-buffers:
+    do iBuffer = 1 to DatasetHandle:num-buffers:     
+      if (valid-handle (DatasetHandle:get-buffer-handle(iBuffer):data-source)) then do:        
+        do iDataSourceBuffer = 1 to DatasetHandle:get-buffer-handle(iBuffer):data-source:num-source-buffers:
           
           contextInstance:setContext(
             "OPTION", 
-            hdsDataset:get-buffer-handle(iBuffer):Name + "_" + string(iDataSourceBuffer) + ".nextRowid":U,
+            DatasetHandle:get-buffer-handle(iBuffer):Name + "_" + string(iDataSourceBuffer) + ".nextRowid":U,
             "",
-            string(hdsDataset:get-buffer-handle(iBuffer):data-source:next-rowid(iDataSourceBuffer))
+            string(DatasetHandle:get-buffer-handle(iBuffer):data-source:next-rowid(iDataSourceBuffer))
           ) no-error.
         end.
       end.
@@ -188,7 +187,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   method protected void ValidateData():
     
     if (Validations:HasValidations) then
-      Validations:RunValidations(dataset-handle hdsdataset by-reference).
+      Validations:RunValidations(dataset-handle DatasetHandle by-reference).
       
   end method.
   
@@ -203,7 +202,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   method protected character addError(beforebuffer as handle, errorstring as character):
     assign 
       beforebuffer:error = true
-      hdsDataset:error   = true
+      DatasetHandle:error   = true
       .
     return (if beforebuffer:error-string = ? then "" else (beforebuffer:error-string + "~n")) + errorstring.
            
@@ -232,9 +231,9 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     
     /* Walk down the table hierarchy starting at each top-level table
     (with no parent). */  
-    do iBuff = 1 to hdsDataset:num-top-buffers:
+    do iBuff = 1 to DatasetHandle:num-top-buffers:
       
-      hTopBuff = hdsDataset:get-top-buffer(iBuff).
+      hTopBuff = DatasetHandle:get-top-buffer(iBuff).
         
       /* Skip the reposition children. */
       if (hTopBuff:parent-relation <> ?) then 
@@ -247,7 +246,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   
   method public void DetachDatasource():
     /* Clean up attached datasources and callback
-     * Precondition: hdsDataset must reference a valid dataset */
+     * Precondition: DatasetHandle must reference a valid dataset */
     define variable iBuffer           as integer no-undo.
     define variable hBuffer           as handle  no-undo.
     define variable datasourceHandle  as handle no-undo.
@@ -255,9 +254,9 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     define variable i                 as integer no-undo.
     define variable numBuffers        as integer no-undo.
     
-    do iBuffer = 1 to hdsDataset:num-buffers:
+    do iBuffer = 1 to DatasetHandle:num-buffers:
 
-      hBuffer = hdsDataset:get-buffer-handle(iBuffer).
+      hBuffer = DatasetHandle:get-buffer-handle(iBuffer).
       datasourceHandle = hBuffer:data-source.
       hBuffer:detach-data-source().
       
@@ -327,7 +326,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     if (pcMap  = "") then 
       pcMap = ?.
       
-    hEntityBuffer = hdsDataset:get-buffer-handle(pcEntityTable).
+    hEntityBuffer = DatasetHandle:get-buffer-handle(pcEntityTable).
     
     if not valid-handle(hEntityBuffer) then 
       undo, throw new AppError(substitute("buffer &1 not found in dataset", quoter(pcEntityTable)), -1).
@@ -485,7 +484,7 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
   end method.
   
  
-  method public void AfterRowFill (dataset-handle hdsDataset):
+  method public void AfterRowFill (dataset-handle DatasetHandle):
   /* Placeholder for custom AFTER-ROW-FILL event handler in the
      Data Access Object to load data from related tables and any
      other calculations. */    
@@ -509,8 +508,8 @@ class bfv.oera.base.DataAccessObject inherits componentbase implements IDataAcce
     
     create query hQuery.
     
-    do iTable = 1 to hdsDataset:num-buffers:
-      hBuffer = hdsDataset:get-buffer-handle(iTable).
+    do iTable = 1 to DatasetHandle:num-buffers:
+      hBuffer = DatasetHandle:get-buffer-handle(iTable).
       
       if hBuffer:table-handle:has-records then do:
       

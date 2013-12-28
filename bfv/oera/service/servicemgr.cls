@@ -2,7 +2,6 @@
 using Progress.Lang.Object.
 using bfv.oera.interfaces.iservicemgr.
 using bfv.oera.interfaces.icomponent.
-using bfv.oera.base.manager.
 using bfv.oera.service.servicemgr.
 /*using bfv.oera.service.authenticationservice.*/
 /*using bfv.oera.service.authorizationservice. */
@@ -11,8 +10,7 @@ using bfv.oera.service.exceptionservice.
 using bfv.oera.service.sessioncontextservice.
 using bfv.lib.system.ObjectFactory.
 
-class bfv.oera.service.servicemgr inherits manager 
-  implements iservicemgr, icomponent:
+class bfv.oera.service.servicemgr implements iservicemgr, icomponent:
         
   define private static variable instance as servicemgr no-undo.
     

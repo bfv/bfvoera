@@ -211,8 +211,8 @@ class bfv.oera.service.exceptionservice
       message 
         SUBST('Error code: &1, Level &2', bException.messageCode, bException.exceptionLevel) skip
           bException.shortMessage skip
-          if bException.progressErrors <> '' then 
-              'Error-status:~n' + bException.progressErrors else '' skip
+          if bException.progressErrors <> "" then 
+              'Error-status:~n' + bException.progressErrors else "" skip
           'Stack:~n' + bException.callStack
         view-as alert-box error.
     end.

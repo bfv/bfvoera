@@ -1,14 +1,4 @@
  
-/*------------------------------------------------------------------------
-   File        : DataSetHelper
-   Purpose     : 
-   Syntax      : 
-   Description : 
-   Author(s)   : rvkanten
-   Created     : Thu Aug 18 09:19:03 CEST 2011
-   Notes       : 
- ----------------------------------------------------------------------*/
-
 using Progress.Lang.*.
 
 routine-level on error undo, throw.
@@ -32,10 +22,6 @@ class bfv.lib.util.DataSetHelper final:
         
   end method.
 
-  /*------------------------------------------------------------------------------
-          Purpose:  																	  
-          Notes:  																	  
-  ------------------------------------------------------------------------------*/
 
   method public static void EnableDatasetForUpdate( datasetHandle as handle ):
 		
@@ -47,8 +33,6 @@ class bfv.lib.util.DataSetHelper final:
       bufferHandle = datasetHandle:get-buffer-handle(i).
       bufferHandle:table-handle:tracking-changes = true.
     end.
-
-    return.
 
   end method.
 

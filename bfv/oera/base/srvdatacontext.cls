@@ -122,7 +122,7 @@ class bfv.oera.base.srvdatacontext inherits DataContext use-widget-pool :
           assign 
             substStart = iPos1
             substEnd   = iPos1
-            substParam = ''
+            substParam = ""
             queryTable = entry(iTable, pcTables).
         end.
         if iPos2 > 0 then
@@ -149,19 +149,19 @@ class bfv.oera.base.srvdatacontext inherits DataContext use-widget-pool :
     do iTable = num-entries(pcTables) to 1 by -1:
       assign 
         cFilter[iTable] = substring(cFilter[iTable], 6).
-      if cFilter[iTable] <> '' then
+      if cFilter[iTable] <> "" then
         assign cFilter[iTable] = '(':U + cFilter[iTable] + ')':U.
     end.
   
     /* Actual substition, backwards since we have to mess with the query string and we don't
      * want to mess with the position we have to work later on */
     for each ttSubst by substStart descending:
-      if ttSubst.queryTable = '' then 
+      if ttSubst.queryTable = "" then 
       do: /* It is parameter */
         find ttContext
           where ttContext.contextGroup    = 'PARAM':U          and 
           ttContext.contextName     = ttSubst.substParam and 
-          ttContext.contextOperator = ''
+          ttContext.contextOperator = ""
           no-lock no-error. 
         if not available ttContext then
           /* This should be a call to fatalError */
@@ -173,7 +173,7 @@ class bfv.oera.base.srvdatacontext inherits DataContext use-widget-pool :
       do: /* Here we have to fit-in the extra conditions */
         assign 
           iTable = lookup(ttSubst.queryTable, pcTables).
-        if cFilter[iTable] <> '' then 
+        if cFilter[iTable] <> "" then 
         do:
           assign 
             substring(pcQuery, substStart, substEnd - substStart) = ' WHERE ':U + cFilter[iTable] +
@@ -214,12 +214,12 @@ class bfv.oera.base.srvdatacontext inherits DataContext use-widget-pool :
     define variable iTablenamePos as integer   no-undo.
     define variable iSpace        as integer   no-undo.   
    
-    if pcQuery <> '':U then 
+    if pcQuery <> "":U then 
     do:
       cSort = getContext(
         'OPTION', 
         'SORT':U,"") no-error.
-      if cSort = ? or cSort = '':U or index(pcQuery, ' each ') = 0 then 
+      if cSort = ? or cSort = "":U or index(pcQuery, ' each ') = 0 then 
         return pcQuery.
   
       /* check if the sort is on the table in the query */
@@ -262,7 +262,7 @@ class bfv.oera.base.srvdatacontext inherits DataContext use-widget-pool :
                       if iIdxPos = 0 then iLength else iIdxPos) 
         
         SUBSTR (pcQuery,iByPos,iLength - iByPos) = " BY ":U + cSort.
-    end. /* if pcQuery = '' */
+    end. /* if pcQuery = "" */
 
     return pcQuery.
   end method.

@@ -10,14 +10,13 @@
 
 routine-level on error undo, throw.
 
-using bfv.oera.base.manager.
+
 using bfv.oera.interfaces.icontextmanager.
 using bfv.oera.interfaces.icomponent.
 using bfv.oera.service.contextmanager.
 using bfv.oera.service.IContextPersistence.
 
-class bfv.oera.service.contextmanager inherits manager
-  implements icontextmanager, icomponent
+class bfv.oera.service.contextmanager implements icontextmanager, icomponent
   use-widget-pool :
 
   {bfv/oera/service/errorstatus.i}

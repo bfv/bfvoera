@@ -18,8 +18,8 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
    * - Invoke validation at the appropriate times
    * - Keep state in attributes and make sure that the attributes are set on api calls
    */
-  define protected    property hdsDataset      as handle no-undo get. set.
-  define protected    property DataAccess      as IDataAccess no-undo get. set.
+  define protected    property DatasetHandle as handle no-undo get. set.
+  define protected    property DataAccess    as IDataAccess no-undo get. set.
   
   define protected property CurrentDataContext as srvdatacontext get. set. 
   
@@ -37,33 +37,31 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
     end. 
     private set.
 
-  method public void FetchData(output dataset-handle phDataset, 
-                               contextInstance as srvdatacontext):
+  method public void FetchData(output dataset-handle datasetHandleIn, contextInstance as srvdatacontext):
     /* API method to fetch data. Save attributes and continue stateful */
-    hdsDataset = phDataset.
+    DatasetHandle = datasetHandleIn.
     CurrentDataContext = contextInstance.
     LoadData().
   end method.
   
-  method public void StoreData(input-output dataset-handle phDataset, 
+  method public void StoreData(input-output dataset-handle datasetHandleIn, 
                                contextInstance as srvdatacontext):
     /* API method to store data. Save attributes and continue stateful */
-    hdsDataset = phDataset.
+    DatasetHandle = datasetHandleIn.
     CurrentDataContext = contextInstance.
     SaveData().
   end method.
   
-  method public void FetchRelated(input-output DATASET-HANDLE phDataset, 
-                                  input contextInstance as srvdatacontext):
+  method public void FetchRelated(input-output DATASET-HANDLE datasetHandleIn, contextInstance as srvdatacontext):
     /* API method to store data. Save attributes and continue stateful */
-    hdsDataset = phDataset.
+    DatasetHandle = datasetHandleIn.
     CurrentDataContext = contextInstance.
     loadRelated().
   end method.
 
   method protected void LoadRelated():
     /* Call to state-aware standard */
-    dataAccess:hdsDataset = hdsDataset.
+    dataAccess:DatasetHandle = this-object:DatasetHandle.
     dataAccess:ContextInstance = CurrentDataContext.
     dataAccess:LoadRelated().
     dataAccess:ResetDataset().
@@ -72,7 +70,7 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
   method protected void LoadData():
     /* Set the dataset and context state in the default DataAccess component and 
        invoke the actual load */
-    dataAccess:hdsDataset = hdsDataset.
+    dataAccess:DatasetHandle = DatasetHandle.
     dataAccess:ContextInstance = CurrentDataContext.
     dataAccess:loadData().
     dataAccess:resetDataset().
@@ -81,16 +79,19 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
   method protected void ValidateData():
     
     if (Validations:HasValidations) then
-      Validations:RunValidations(dataset-handle hdsdataset by-reference).
+      Validations:RunValidations(dataset-handle DatasetHandle by-reference).
       
   end method.
   
   method protected character AddError(beforebuffer as handle, errorstring as character):
+    
     assign 
       beforebuffer:error = true
-      hdsDataset:error   = true
+      DatasetHandle:error   = true
       .
-    return (if beforebuffer:error-string = ? then '' else (beforebuffer:error-string + '~n')) + errorstring.
+      
+    return (if beforebuffer:error-string = ? then "" else (beforebuffer:error-string + "~n")) + errorstring.
+    
   end method.  
   
   method protected character AddWarning(beforebuffer as handle, warningstring as character):
@@ -101,8 +102,8 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
     /* Validate using the Business Logic and persistent store using the DataAccess Logic */
     ValidateData().
     PreTransaction().
-    if not hdsDataset:error then do:
-      dataAccess:hdsDataset = hdsDataset.
+    if not DatasetHandle:error then do:
+      dataAccess:DatasetHandle = DatasetHandle.
       dataAccess:ContextInstance = CurrentDataContext.
       dataAccess:saveData().
       dataAccess:resetDataset().
@@ -127,11 +128,11 @@ class bfv.oera.base.BusinessEntity inherits BusinessComponent implements IBusine
   end method.
   
   method public logical StoreChanges(ctx as srvdatacontext, includeParents as logical):
-    StoreChanges(dataset-handle hdsDataset by-reference, this-object, ctx, includeParents).
+    StoreChanges(dataset-handle DatasetHandle by-reference, this-object, ctx, includeParents).
   end method.
   
   method public logical StoreChanges(includeParents as logical):
-    StoreChanges(dataset-handle hdsDataset by-reference, this-object, includeParents).
+    StoreChanges(dataset-handle DatasetHandle by-reference, this-object, includeParents).
   end method.
   
 end class.   
