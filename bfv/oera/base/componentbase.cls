@@ -2,9 +2,7 @@ using bfv.oera.base.ComponentBase.
 using bfv.oera.interfaces.IComponent.
 using bfv.oera.service.servicemgr.
 
-class bfv.oera.base.ComponentBase
-    implements IComponent
-    use-widget-pool :
+class bfv.oera.base.ComponentBase implements IComponent use-widget-pool :
 /* Base class for all objects. Locates the service manager, which it expects
    some startup routine to have created.
 */
@@ -28,7 +26,6 @@ class bfv.oera.base.ComponentBase
   method public void destroyComponent():
       /* Not yet defined. */
   end method.
-
-
+  
 end class.      
 

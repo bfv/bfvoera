@@ -6,9 +6,7 @@ using bfv.oera.base.srvdatacontext.
 
 
 class bfv.oera.base.ServerDataContext inherits srvdatacontext: 
-  
-  {bfv/oera/base/dscontext.i}
-  
+    
   constructor public ServerDataContext():
     bindContext(dataset dscontext bind).  
   end.
