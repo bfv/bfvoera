@@ -6,7 +6,7 @@
    REFERENCE-ONLY -- it holds the actual context data to be passed to the
    Service Provider on the server.
  */
-using bfv.oera.interfaces.*.
+using bfv.oera.base.IDataContext.
 using bfv.oera.base.DataContext.
 
  
