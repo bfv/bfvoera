@@ -10,32 +10,28 @@ class bfv.lib.util.DataSetHelper final:
   end.
   
   method public static void DisableDatasetForUpdate(datasetHandle as handle):
-		
+    setTrackingChanges(datasetHandle, false).  
+  end method.
+
+
+  method public static void EnableDatasetForUpdate(datasetHandle as handle):
+		setTrackingChanges(datasetHandle, true).
+  end method.
+  
+  
+  method private static void setTrackingChanges(datasetHandle as handle, isTracked as logical):
+    
     define variable i            as integer no-undo.
     define variable bufferHandle as handle  no-undo.
         
         
     do i = 1 to datasetHandle:num-buffers:           
       bufferHandle = datasetHandle:get-buffer-handle(i).
-      bufferHandle:table-handle:tracking-changes = false.
+      bufferHandle:table-handle:tracking-changes = isTracked.
     end.
-        
+    
   end method.
-
-
-  method public static void EnableDatasetForUpdate( datasetHandle as handle ):
-		
-    define variable i            as integer no-undo.
-    define variable bufferHandle as handle  no-undo.
-        
-        
-    do i = 1 to datasetHandle:num-buffers:           
-      bufferHandle = datasetHandle:get-buffer-handle(i).
-      bufferHandle:table-handle:tracking-changes = true.
-    end.
-
-  end method.
-
+  
   /*------------------------------------------------------------------------------
           Purpose:  	Unknown values in character velden naar initiele waarden zetten.																  
           Notes:  		Unknown values worden bijvoorbeeld door een service aangeleverd.															  
@@ -51,11 +47,11 @@ class bfv.lib.util.DataSetHelper final:
     define variable aantalExtensies as integer no-undo.
     define variable extensieNummer  as integer no-undo.
     define variable huidigeExtensie as integer no-undo.
-    define variable bufferQryHandle as handle  no-undo.
+    define variable queryHandle as handle  no-undo.
     
         
     numBuffers = datasetHandle:num-buffers.
-    create query bufferQryHandle.
+    create query queryHandle.
     
     do i = 1 to numBuffers:    
          
@@ -63,12 +59,12 @@ class bfv.lib.util.DataSetHelper final:
         bufferHandle = datasetHandle:get-buffer-handle (i)
         aantalVelden = bufferHandle:num-fields.
         
-      bufferQryHandle:set-buffers(bufferHandle).
-      bufferQryHandle:query-prepare("for each " + bufferHandle:name).
-      bufferQryHandle:query-open().
-      bufferQryHandle:get-first().
+      queryHandle:set-buffers(bufferHandle).
+      queryHandle:query-prepare("for each " + bufferHandle:name).
+      queryHandle:query-open().
+      queryHandle:get-first().
         
-      do while not bufferQryHandle:query-off-end:  
+      do while not queryHandle:query-off-end:  
         do veldNummer = 1 to aantalVelden:
           if bufferHandle:buffer-field(veldNummer):data-type <> "character" then
             next.
@@ -88,53 +84,50 @@ class bfv.lib.util.DataSetHelper final:
           end.
         end. /* do aantalVelden */
         
-        bufferQryHandle:get-next(). 
+        queryHandle:get-next(). 
       end. /* query-off-end */
         
     end. /* aantal buffers */
     
     finally:
-      bufferQryHandle:query-close().
-      delete object bufferQryHandle no-error.
+      queryHandle:query-close().
+      delete object queryHandle no-error.
     end finally.
 
   end method.
 	
-  method public static void MarkDatasetAsNew(markDatasetHandle as handle):
+  method public static void MarkDatasetAsNew(datasetHandle as handle):
     
-    define variable markBufferHandle as handle  no-undo.
-    define variable i        as integer no-undo.
-    define variable numBuffers       as integer no-undo.
+    define variable bufferHandle as handle  no-undo.
+    define variable i as integer no-undo.
 	  
-    assign
-      numBuffers = markDatasetHandle:num-buffers.
 	
-    do i = 1 to numBuffers:
-      markBufferHandle = markDatasetHandle:get-buffer-handle(i).
-      markBufferHandle:mark-new().
+    do i = 1 to datasetHandle:num-buffers:
+      bufferHandle = datasetHandle:get-buffer-handle(i).
+      bufferHandle:mark-new().
     end.
     
   end method.
     
   method public static void SetRowStateAllBufferRecords(actie as integer, bufferHandle as handle):
     
-    define variable bufferQryHandle as handle no-undo.
+    define variable queryHandle as handle no-undo.
 
-    create query bufferQryHandle.
-    bufferQryHandle:set-buffers(bufferHandle).
-    bufferQryHandle:query-prepare("for each " + bufferHandle:name).
-    bufferQryHandle:query-open().
-    bufferQryHandle:get-first().
+    create query queryHandle.
+    queryHandle:set-buffers(bufferHandle).
+    queryHandle:query-prepare("for each " + bufferHandle:name).
+    queryHandle:query-open().
+    queryHandle:get-first().
     
-    do while not bufferQryHandle:query-off-end: 
+    do while not queryHandle:query-off-end: 
  
       SetRowState(actie, bufferHandle).
-      bufferQryHandle:get-next(). 
+      queryHandle:get-next(). 
     end. /* query-off-end */
     
     finally:
-      bufferQryHandle:query-close().
-      delete object bufferQryHandle no-error.
+      queryHandle:query-close().
+      delete object queryHandle no-error.
       bufferHandle:table-handle:tracking-changes = false.
     end finally.
       	  
@@ -168,16 +161,16 @@ class bfv.lib.util.DataSetHelper final:
     filterVeld as character,
     filterWaarde as character): 
                                                
-    define variable bufferQryHandle as handle  no-undo.
+    define variable queryHandle as handle  no-undo.
     define variable isFound         as logical no-undo.
     
-    create query bufferQryHandle.
-    bufferQryHandle:set-buffers(bufferChanged).
-    bufferQryHandle:query-prepare(substitute("for each &1 where &2.&3 = &4", bufferChanged:name, bufferChanged:name, filterVeld, quoter(filterWaarde))).
-    bufferQryHandle:query-open().
-    bufferQryHandle:get-first().
+    create query queryHandle.
+    queryHandle:set-buffers(bufferChanged).
+    queryHandle:query-prepare(substitute("for each &1 where &2.&3 = &4", bufferChanged:name, bufferChanged:name, filterVeld, quoter(filterWaarde))).
+    queryHandle:query-open().
+    queryHandle:get-first().
 
-    do while not bufferQryHandle:query-off-end:
+    do while not queryHandle:query-off-end:
       isFound = bufferDb:find-first(substitute("where &1.&2 = &3", bufferDb:name, idVeld, quoter(string(bufferChanged:buffer-field(idVeld):buffer-value))) ) no-error.             
       if isFound then
         SetRowState(row-modified, bufferChanged). 
@@ -185,16 +178,16 @@ class bfv.lib.util.DataSetHelper final:
         SetRowState(row-created, bufferChanged).
 
       bufferChanged:table-handle:tracking-changes = false.  
-      bufferQryHandle:get-next(). 
+      queryHandle:get-next(). 
     end. /* query-off-end */
 
     /* Check op deleted records */
-    bufferQryHandle:set-buffers(bufferDb).
-    bufferQryHandle:query-prepare("for each " + bufferDb:name).
-    bufferQryHandle:query-open().
-    bufferQryHandle:get-first().
+    queryHandle:set-buffers(bufferDb).
+    queryHandle:query-prepare("for each " + bufferDb:name).
+    queryHandle:query-open().
+    queryHandle:get-first().
     
-    do while not bufferQryHandle:query-off-end:
+    do while not queryHandle:query-off-end:
       isFound = bufferChanged:find-first(substitute("where &1.&2 = &3", bufferChanged:name, idVeld, quoter(string(bufferDb:buffer-field(idVeld):buffer-value))) ) no-error.
       if not isFound then 
       do:
@@ -204,12 +197,12 @@ class bfv.lib.util.DataSetHelper final:
         bufferChanged:table-handle:tracking-changes = false.
       end.
        
-      bufferQryHandle:get-next(). 
+      queryHandle:get-next(). 
     end. /* query-off-end */
     
     finally:
-      bufferQryHandle:query-close().
-      delete object bufferQryHandle no-error.
+      queryHandle:query-close().
+      delete object queryHandle no-error.
     end finally.
     
   end method.                                      
