@@ -1,0 +1,29 @@
+<project name="build" default="build" basedir=".">
+
+	<taskdef resource="PCT.properties" />
+	
+	<target name="build" depends="compile,package" />
+	
+	<property name="builddir" value="../../build" />
+	<property name="deploydir" value="../../deploy" />
+	
+	<target name="compile">
+	  <PCTCompileExt destdir="${builddir}" dlchome="${DLC}" md5="true" graphicalmode="true" cpstream="utf-8">
+	  	<fileset dir=".">
+        <include name="**/*.p" />
+        <include name="**/*.w" />
+        <include name="**/*.cls" />
+	  	</fileset>
+	  </PCTCompileExt>	 
+	</target>
+	
+	<target name="package">
+		<PCTLibrary destfile="${deploydir}/bfvoera.pl" dlcHome="${DLC}">
+		  <fileset dir="${builddir}">
+		  	<include name="**/*.r" />
+		  	<exclude name=".pct/**/*" />
+			</fileset>
+		</PCTLibrary>
+  </target>
+	
+</project>
