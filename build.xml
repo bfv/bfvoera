@@ -1,6 +1,9 @@
 <project name="build" default="build" basedir=".">
-
+  
+	<!-- this build script assumes the presence of PCT (https://code.google.com/p/pct/) -->
+	
 	<taskdef resource="PCT.properties" />
+	<property environment="env"/>
 	
 	<target name="build" depends="compile,package" />
 	
@@ -8,7 +11,7 @@
 	<property name="deploydir" value="../../deploy" />
 	
 	<target name="compile">
-	  <PCTCompileExt destdir="${builddir}" dlchome="${DLC}" md5="true" graphicalmode="true" cpstream="utf-8">
+	  <PCTCompileExt destdir="${builddir}" dlchome="${env.DLC}" md5="true" graphicalmode="true" cpstream="utf-8">
 	  	<fileset dir=".">
         <include name="**/*.p" />
         <include name="**/*.w" />
@@ -18,7 +21,7 @@
 	</target>
 	
 	<target name="package">
-		<PCTLibrary destfile="${deploydir}/bfvoera.pl" dlcHome="${DLC}">
+		<PCTLibrary destfile="${deploydir}/bfvoera.pl" dlcHome="${env.DLC}">
 		  <fileset dir="${builddir}">
 		  	<include name="**/*.r" />
 		  	<exclude name=".pct/**/*" />
