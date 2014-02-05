@@ -1,1 +1,0 @@
-INPUT-OUTPUT DATASET ds{&COMPONENT-NAME}{&dsname-addition} BY-REFERENCE, INPUT ContextInstance
