@@ -11,7 +11,8 @@
 	<property name="deploydir" value="../../deploy" />
 	
 	<target name="compile">
-	  <PCTCompileExt destdir="${builddir}" dlchome="${env.DLC}" md5="true" graphicalmode="true" cpstream="utf-8">
+		<delete dir="${builddir}" />
+	  <PCTCompileExt destdir="${builddir}" dlchome="${env.DLC}" md5="true" graphicalmode="true" cpstream="utf-8" forceCompile="true">
 	  	<fileset dir=".">
         <include name="**/*.p" />
         <include name="**/*.w" />
