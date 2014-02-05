@@ -1,12 +1,3 @@
-/*------------------------------------------------------------------------
-   File        : contextmanager
-   Purpose     :
-   Syntax      :
-   Description :
-   Author(s)   : rvkanten
-   Created     : Mon Jun 25 16:48:14 CEST 2007
-   Notes       :
- ----------------------------------------------------------------------*/
 
 routine-level on error undo, throw.
 

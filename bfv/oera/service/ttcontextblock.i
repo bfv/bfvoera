@@ -1,24 +1,5 @@
 
-/*------------------------------------------------------------------------
-    File        : ttcontextblock.i
-    Purpose     : 
-
-    Syntax      :
-
-    Description : 
-
-    Author(s)   : rvkanten
-    Created     : Mon Jun 25 16:28:39 CEST 2007
-    Notes       :
-  ----------------------------------------------------------------------*/
-
-/* ***************************  Definitions  ************************** */
-
-DEFINE TEMP-TABLE ttContextBlock {&REFERENCE-ONLY}
-    FIELD ContextName    AS CHARACTER
-    FIELD ContextValue   AS CHARACTER
+define temp-table ttContextBlock {&REFERENCE-ONLY}
+    field ContextName    as character
+    field ContextValue   as character
     .
-/* ********************  Preprocessor Definitions  ******************** */
-
-
-/* ***************************  Main Block  *************************** */

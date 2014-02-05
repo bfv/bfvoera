@@ -1,19 +1,4 @@
  
- /*------------------------------------------------------------------------
-    File        : DAEventArgs
-    Purpose     : 
-    Syntax      : 
-    Description : 
-    Author(s)   : rvkanten
-    Created     : Wed Sep 15 15:51:36 CEST 2010
-    Notes       : 
- ========================================================================
- $Log: /CURA91/bfv/oera/base/DAEventArgs.cls $
- 
- 1     15-09-10 16:27 Rvk
- T.b.v. publiceren van events vanuit dataaccessobject
-  ----------------------------------------------------------------------*/
-
 using Progress.Lang.*.
 using OpenEdge.Core.System.EventArgs.
 

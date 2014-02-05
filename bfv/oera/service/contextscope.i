@@ -1,37 +1,10 @@
 
-/*------------------------------------------------------------------------
-    File        : contextscope.i
-    Purpose     : 
-
-    Syntax      :
-
-    Description : Context Scope Enumeration Values
-
-    Author(s)   : rvkanten
-    Created     : Tue Jun 26 10:34:28 CEST 2007
-    Notes       :
-  ----------------------------------------------------------------------*/
-
-/* ***************************  Definitions  ************************** */
-
-/*
-**	---------------------------------------------------------------------
-**	--- Scope Bits ------------------------------------------------------
-**	---------------------------------------------------------------------
-*/
-
 &GLOBAL-DEFINE	ScopeBitGlobal             1
 &GLOBAL-DEFINE	ScopeBitApplication        2
 &GLOBAL-DEFINE	ScopeBitClientConnection   3
 &GLOBAL-DEFINE	ScopeBitServerSession      4
 &GLOBAL-DEFINE	ScopeBitClientSession      5
 &GLOBAL-DEFINE	ScopeBitUser               6
-
-/*
-**	---------------------------------------------------------------------
-**	--- Scope Values ----------------------------------------------------
-**	---------------------------------------------------------------------
-*/
 
 &GLOBAL-DEFINE	ScopeGlobal                1
 &GLOBAL-DEFINE	ScopeApplication           2
@@ -40,7 +13,3 @@
 &GLOBAL-DEFINE	ScopeClientSession        16
 &GLOBAL-DEFINE	ScopeUser                 32
 
-/* ********************  Preprocessor Definitions  ******************** */
-
-
-/* ***************************  Main Block  *************************** */
