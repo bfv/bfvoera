@@ -18,7 +18,7 @@ class bfv.lib.io.Directory final:
   constructor protected Directory():
   end.
   
-  method public static void GetDirectories(initialDirectory as character, searchpattern as character, output table ttfile):
+  method public static void GetDirectories(initialDirectory as character, searchPattern as character, output table ttfile):
     
     empty temp-table ttfile.
     
